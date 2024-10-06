@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0
 /*
- * Common Primitives for Data Access Monitoring
+ * Common Operations for Data Access Monitoring
  *
  * Author: SeongJae Park <sj@kernel.org>
  */
@@ -10,7 +10,7 @@
 #include <linux/pagemap.h>
 #include <linux/rmap.h>
 
-#include "prmtv-common.h"
+#include "ops-common.h"
 
 /*
  * Get an online page for a pfn if it's in the LRU list.  Otherwise, returns
@@ -101,6 +101,8 @@ int damon_pageout_score(struct damon_ctx *c, struct damon_region *r,
 	int hotness;
 
 	max_nr_accesses = c->aggr_interval / c->sample_interval;
+	if (max_nr_accesses == 0)
+		max_nr_accesses = 1;
 	freq_subscore = r->nr_accesses * DAMON_MAX_SUBSCORE / max_nr_accesses;
 
 	age_in_sec = (unsigned long)r->age * c->aggr_interval / 1000000;
