@@ -1047,6 +1047,15 @@ static int ged_dvfs_fb_gpu_dvfs(int t_gpu_done_interval, int t_gpu_target,
 		ap_workload = ap_workload_active;
 	}
 
+#if defined(CONFIG_MTK_GPUFREQ_V2)
+		/* TODO: remove it after clk_rate_change_notify from eb is enable */
+		cur_freq = gpufreq_get_cur_freq(TARGET_GPU);
+		if (g_ged_gpueb_support && cur_freq != pre_freq) {
+			mtk_notify_gpu_freq_change(0, cur_freq);
+			pre_freq = cur_freq;
+		}
+#endif /* CONFIG_MTK_GPUFREQ_V2 */
+
 	if (ged_is_fdvfs_support() && is_fb_dvfs_triggered && is_fdvfs_enable()
 		&& g_eb_workload != 0xFFFF) {
 		g_eb_workload /= 100;
